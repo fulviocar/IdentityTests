@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Identity App</title>
+
+    <script>
+
+        const baseUrl = "https://localhost:7035/users/authenticate";
+
+        const baseRequestConfig = {
+        }
+
+        async function test() {
+
+            console.log(JSON.stringify(baseRequestConfig));
+
+            const response = await fetch('https://localhost:7035/users/all', {
+                ...baseRequestConfig,
+                redirect: "manual"
+            });
+
+            console.log(await response.json());
+        }
+
+
+        async function signIn(Username, Password) {
+
+            console.log("in");
+
+            const response = await fetch(baseUrl, {
+                method: "POST",
+                body: JSON.stringify({ Username, Password }),
+                headers: { "Content-Type": "application/json" }
+            });
+
+            if (response.ok) {
+                let responseData = await response.json();
+
+                console.log(responseData);
+                console.log(responseData.token);
+
+                
+           
+                    baseRequestConfig.headers = {
+                        "Authorization": `Bearer ${responseData.token}`
+                    }
+                
+                
+            }
+            
+        }
+
+        
+
+
+    </script>
+</head>
+<body>
+
+    <button onclick="signIn('test','test')">Sign in</button>
+    <button onclick="test()">All</button>
+</body>
+</html>

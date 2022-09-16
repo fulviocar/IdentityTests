@@ -1,0 +1,20 @@
+﻿@page
+@model IndexModel
+@{
+ViewData["Title"] = "Claims";
+}
+
+<div class="row">
+<div class="col-md-6">
+<p>
+<ul>
+@{
+foreach (var claim in User.Claims)
+{
+<li>@claim.Type: @claim.Value</li>
+}
+}
+</ul>
+</p>
+</div>
+</div>

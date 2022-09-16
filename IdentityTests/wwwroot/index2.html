@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Identity App</title>
+
+    <script>
+
+        const baseUrl = "https://localhost:7035/api/auth2/signin";
+
+        function parseJwt(token) {
+            var base64Url = token.split('.')[1];
+            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+
+            return JSON.parse(jsonPayload);
+        };
+
+
+        function decode(jwt) {
+            const [headerB64, payloadB64] = jwt.split('.');
+            // These supports parsing the URL safe variant of Base64 as well. 
+            const headerStr = new Buffer(headerB64, 'base64').toString();
+            const payloadStr = new Buffer(payloadB64, 'base64').toString();
+
+
+            return {
+            header: JSON.parse(headerStr),
+                payload: JSON.parse(payloadStr)
+            };
+    }
+
+        async function signIn() {
+
+            const response = await fetch(baseUrl);
+
+            if (response.ok) {
+                let responseData = await response.text();
+
+                let payload = parseJwt(responseData);
+
+                console.log(payload.UserName);
+                    
+                console.log(JSON.stringify(payload));
+            }
+            
+        }
+
+        async function signIn2() {
+
+            const response = await fetch(baseUrl);
+
+            if (response.ok) {
+                let responseData = await response.text();
+
+                let payload = decode(responseData);
+
+                console.log(JSON.stringify(payload));
+            }
+
+        }
+
+    </script>
+</head>
+<body>
+    <button onclick="signIn()">Sign in</button>
+    <button onclick="signIn2()">Sign in2</button>
+</body>
+</html>
